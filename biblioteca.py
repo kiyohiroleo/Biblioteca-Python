@@ -7,9 +7,11 @@ class Biblioteca:
     def adicionarUsuario(self):
         nome = input("Qual o seu nome completo? ")
         email = input("E-mail para contato: ")
-        lista_livros = []
-
-        usuario = Usuario(nome, email, lista_livros)
+        limite_livros = input("Gostaria de ser um membro VIP? (S/N) ")
+        if limite_livros.lower() == "s":
+            usuario = UsuarioVIP(nome, email)
+        else:
+            usuario = UsuarioRegular(nome, email)
         
         if any(u.email == email for u in self.usuarios_cadastrados):
             print("Usuário já cadastrado.")
@@ -19,11 +21,19 @@ class Biblioteca:
     
     def exibirUsuarios(self):
         for u in self.usuarios_cadastrados:
-            print(f"Nome: {u.nome} Email: {u.email} Livros: {u.lista_livros}")
+            if u.membro == 6:
+                print(f"Nome: {u.nome} | Email: {u.email} Livros: {u.lista_de_livros} Membro: {"VIP", u.membro, "de limite."}")
+            else:
+                print(f"Nome: {u.nome} | Email: {u.email} Livros: {u.lista_de_livros} Membro: {"Regular", u.membro, "de limite"}")
 
-    def exibirLivros(self):
+
+    def exibirLivrosEmprestados(self):
+        for l in self.livros_emprestados:
+            print(f"Livro: {l.titulo} | Autor {l.autor} | Ano {l.ano} | Status {l.status}")
+
+    def exibirLivrosDisponiveis(self):
         for l in self.livros_disponiveis:
-            print(f"Livro: {l.titulo} Autor {l.autor} Ano {l.ano} Status {l.status}")
+            print(f"Livro: {l.titulo} | Autor {l.autor} | Ano {l.ano} | Status {l.status}")
 
     def adicionarLivro(self):
 
@@ -33,15 +43,19 @@ class Biblioteca:
             titulo = input("Qual o titulo do Livro? ")
             autor = input("Qual o autor do Livro? ")
             ano = input("Qual o ano do Livro? ")
-            status = "Emprestado"
+            status = input("Gostaria de uma versão física ou digital do Livro? ")
+            
+            livro = Livro(titulo, autor, ano, status)
+            self.livros_emprestados.append(livro)
+
+            if status.lower() == "digital":
+                status = LivroDigital(titulo, autor, ano, status)
+            else:
+                status = LivroFisico(titulo, autor, ano, status)
 
             print("Usuário encontrado, prossiga com o cadastro do livro.")
 
-            novo_livro = Livro(titulo, autor, ano, status)
-
-            self.livros_emprestados.append(novo_livro)
             print("Livro cadastrado com sucesso.")
-
         else:
             print("Usuário ainda não cadastrado.")
 
@@ -61,12 +75,30 @@ class Livro:
         self.autor = autor
         self.ano = ano
         self.status = status
+
+class LivroFisico(Livro):
+    def __init__(self, titulo, autor, ano, status):
+        super().__init__(titulo, autor, ano, status)
+
+class LivroDigital(Livro):
+    def __init__(self, titulo, autor, ano, status):
+        super().__init__(titulo, autor, ano, status)
+
 # Usuário      
 class Usuario:
-    def __init__(self, nome, email, lista_livros):
+    def __init__(self, nome, email, membro):
         self.nome = nome
         self.email = email
-        self.lista_livros = lista_livros
+        self.membro = membro
+        self.lista_de_livros = []
+
+class UsuarioRegular(Usuario):
+    def __init__(self, nome, email):
+        super().__init__(nome, email, membro = 3)
+
+class UsuarioVIP(Usuario):
+    def __init__(self, nome, email):
+        super().__init__(nome, email, membro = 6)
 
 # Interface
 def interface():
@@ -79,8 +111,9 @@ def interface():
         print("2. Cadastrar Livro.")
         print("3. Exibir Usuários")
         print("4. Exibir Livros Disponiveis")
-        print("5. Buscar Livros")
-        print("6. Sair")
+        print("5. Exibir Livros Disponiveis")
+        print("6. Buscar Livros")
+        print("7. Sair")
 
         escolha = input("Escolha uma das opções: ")
         if escolha == "1":
@@ -90,10 +123,12 @@ def interface():
         elif escolha == "3":
             biblioteca.exibirUsuarios()
         elif escolha == "4":
-            biblioteca.exibirLivros()
+            biblioteca.exibirLivrosEmprestados()
         elif escolha == "5":
-            biblioteca.buscarLivro()
+            biblioteca.exibirLivrosDisponiveis()
         elif escolha == "6":
+            biblioteca.buscarLivro()
+        elif escolha == "7":
             break
         else:
             print("Escolha Inválida.")
