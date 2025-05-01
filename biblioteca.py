@@ -34,6 +34,9 @@ class Biblioteca:
         for l in self.livros_disponiveis:
             print(f"Livro: {l.titulo} | Autor {l.autor} | Ano {l.ano} | Status {l.status}")
 
+    def cadastrarLivro(self):
+        pass
+
     def alugarLivro(self):
         pass
 
@@ -48,9 +51,7 @@ class Biblioteca:
             print("Livro disponível, retorne ao menu para fazer o cadastro.")
         else:
             print("Livro indisponível.")
-
-    
-            
+  
 # Livro
 class Livro:
     def __init__(self, titulo, autor, ano, status):
@@ -89,36 +90,7 @@ def interface():
     biblioteca = Biblioteca()
 
     while True:
-        print("Menu:")
-        print("1. Cadastrar Usuário.")
-        print("2. Cadastrar Livro.")
-        print("3. Exibir Usuários")
-        print("4. Exibir Livros Disponiveis")
-        print("5. Exibir Livros Emprestados")
-        print("6. Buscar Livros")
-        print("7. Devolver")
-        print("8. Sair")
-
-        escolha = input("Escolha uma das opções: ")
-        if escolha == "1":
-            biblioteca.cadastrarUsuario()
-        elif escolha == "2":
-            biblioteca.alugarLivro()
-        elif escolha == "3":
-            biblioteca.exibirUsuarios()
-        elif escolha == "4":
-            biblioteca.exibirLivrosDisponiveis()
-        elif escolha == "5":
-            biblioteca.exibirLivrosEmprestados()
-        elif escolha == "6":
-            biblioteca.buscarLivro()
-        elif escolha == "7":
-            biblioteca.devolver()
-        elif escolha == "8":
-            break
-        else:
-            print("Escolha Inválida.")
 
 interface()
 
-# Checklist: A verificar
+# Checklist: Relatório: quais livros foram retirados da biblioteca e quem retirou.
