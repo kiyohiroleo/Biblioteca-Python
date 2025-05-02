@@ -5,20 +5,20 @@ class Biblioteca:
     usuarios = []
     livros_disponiveis = []
     livros_alugados = []
-# Exibir Usuários
+
     def exibirUsuarios(self):
         for u in self.usuarios:
-            livros_formatados = ", ".join(str(livro) for livro in u.lista) if u.lista else "Nenhum"
-            print(f"Nome: {u.nome} / E-mail: {u.email} / {'VIP' if u.limite > 3 else 'Regular'} / Livros: {livros_formatados}")
-# Exibir Livros Disponiveis
+            livros_formatados = ", ".join(str(livro) for livro in u.get_lista()) if u.get_lista() else "Nenhum"
+            print(f"Nome: {u.get_nome()} / E-mail: {u.get_email()} / {'VIP' if u.get_limite() > 3 else 'Regular'} / Livros: {livros_formatados}")
+
     def LivrosDisponiveis(self):
         for ld in self.livros_disponiveis:
-            print(f"Titulo: {ld.titulo} / Autor: {ld.autor} / Ano: {ld.ano} / Status: {ld.status}")
+            print(f"Titulo: {ld.get_titulo()} / Autor: {ld.get_autor()} / Ano: {ld.get_ano()} / Status: {ld.get_status()}")
+
     def LivrosAlugados(self):
         for livro, usuario in self.livros_alugados:
-            print(f"Titulo: {livro.titulo} / Autor: {livro.autor} / Ano: {livro.ano} / Status: {livro.status} / Alugado por: {usuario.nome}")
+            print(f"Titulo: {livro.get_titulo()} / Autor: {livro.get_autor()} / Ano: {livro.get_ano()} / Status: {livro.get_status()} / Alugado por: {usuario.get_nome()}")
 
-# Cadastrar Usuarios
     def cadastrarUsuario(self):
         nome = input("Qual seu nome completo? ")
         email = input("Informe um e-mail para contato: ")
@@ -28,10 +28,10 @@ class Biblioteca:
             usuario = UsuarioVIP(nome, email)
         else:
             usuario = UsuarioRegular(nome, email)
-        
+
         self.usuarios.append(usuario)
         print(f"Usuário {nome} cadastrado com sucesso!")
-# Cadastrar Livros.
+
     def cadastrarLivro(self):
         titulo = input("Qual o titulo do livro? ")
         autor = input("Qual o autor do livro? ")
@@ -42,19 +42,19 @@ class Biblioteca:
             livro = LivroDigital(titulo, autor, ano)
         else:
             livro = LivroFisico(titulo, autor, ano)
-        
+
         self.livros_disponiveis.append(livro)
         print(f"Livro {titulo} cadastrado em nossa biblioteca com sucesso!")
-# Alugar Livros.
+
     def alugarLivro(self):
         name_check = input("Qual seu nome completo? ")
         usuario_encontrado = None
-        
+
         for usuario in self.usuarios:
-            if usuario.nome.lower() == name_check.lower():
+            if usuario.get_nome().lower() == name_check.lower():
                 usuario_encontrado = usuario
                 break
-        
+
         if usuario_encontrado:
             print("Usuário encontrado!")
         else:
@@ -70,43 +70,47 @@ class Biblioteca:
             livro = LivroDigital(titulo, autor, ano)
         else:
             livro = LivroFisico(titulo, autor, ano)
-        
-        if len(usuario_encontrado.lista) < usuario_encontrado.limite:
+
+        if len(usuario_encontrado.get_lista()) < usuario_encontrado.get_limite():
             self.livros_alugados.append((livro, usuario_encontrado))
-            usuario_encontrado.lista.append(livro)
+            lista_atual = usuario_encontrado.get_lista()
+            lista_atual.append(livro)
+            usuario_encontrado.set_lista(lista_atual)
             print("Livro adicionado com sucesso!")
             print(f"Livro {titulo} alugado com sucesso em nome de {name_check}!")
         else:
             print("Você chegou ao limite de livros, atualize para VIP para conseguir alugar mais.")
             return
-# Devolução de Livros.
+
     def devolverLivro(self):
         name_check = input("Qual seu nome completo? ")
         usuario_encontrado = None
-        
+
         for usuario in self.usuarios:
-            if usuario.nome.lower() == name_check.lower():
+            if usuario.get_nome().lower() == name_check.lower():
                 usuario_encontrado = usuario
                 break
-        
+
         if usuario_encontrado:
             print("Usuário encontrado!")
         else:
             print("Usuário não está cadastrado, retornado ao menu...")
             return
-        
-        for livro in usuario_encontrado.lista:
+
+        for livro in usuario_encontrado.get_lista():
             print(f"- {livro}")
 
         titulo = input("Qual o livro que deseja devolver? ")
         livro_para_devolver = None
-        for livro in usuario_encontrado.lista:
-            if livro.titulo.lower() == titulo.lower():
+        for livro in usuario_encontrado.get_lista():
+            if livro.get_titulo().lower() == titulo.lower():
                 livro_para_devolver = livro
                 break
 
         if livro_para_devolver:
-            usuario_encontrado.lista.remove(livro_para_devolver)
+            lista_atual = usuario_encontrado.get_lista()
+            lista_atual.remove(livro_para_devolver)
+            usuario_encontrado.set_lista(lista_atual)
             self.livros_disponiveis.append(livro_para_devolver)
 
             for item in self.livros_alugados:
@@ -114,11 +118,10 @@ class Biblioteca:
                     self.livros_alugados.remove(item)
                     break
 
-            print(f"Livro '{livro_para_devolver.titulo}' devolvido com sucesso!")
+            print(f"Livro '{livro_para_devolver.get_titulo()}' devolvido com sucesso!")
         else:
             print("Livro não encontrado na sua lista.")
 
-#Usuario e suas subclasses Regular e VIP
 class Usuario:
     def __init__(self, nome, email, limite):
         self._nome = nome
@@ -153,16 +156,13 @@ class Usuario:
     def set_lista(self, lista):
         self._lista = lista
 
-
 class UsuarioVIP(Usuario):
     def __init__(self, nome, email):
         super().__init__(nome, email, limite=6)
 
-
 class UsuarioRegular(Usuario):
     def __init__(self, nome, email):
         super().__init__(nome, email, limite=3)
-
 
 class Livro:
     def __init__(self, titulo, autor, ano, status):
@@ -198,18 +198,14 @@ class Livro:
     def __str__(self):
         return f"{self._titulo} ({self._ano}) - {self._autor} [{self._status}]"
 
-
 class LivroFisico(Livro):
     def __init__(self, titulo, autor, ano):
         super().__init__(titulo, autor, ano, "Fisico")
-
 
 class LivroDigital(Livro):
     def __init__(self, titulo, autor, ano):
         super().__init__(titulo, autor, ano, "Digital")
 
-
-# Interface
 def Interface():
     biblioteca = Biblioteca()
     while True:
