@@ -24,15 +24,19 @@ class Biblioteca:
     def cadastrarUsuario(self):
         nome = input("Qual seu nome completo? ")
         email = input("Informe um e-mail para contato: ")
-        limite = input("Deseja ser um usuário Regular ou VIP? (R/V) ")
-
-        if limite.lower() == "v":
-            usuario = UsuarioVIP(nome, email)
-        else:
-            usuario = UsuarioRegular(nome, email)
+        while True:
+            limite = input("Deseja ser usuário Regular ou VIP? (R/V) ")
+            if limite.lower() == "r":
+                usuario = UsuarioRegular(nome, email)
+                break
+            elif limite.lower() == "v":
+                usuario = UsuarioVIP(nome, email)
+                break    
+            else:
+                print("Opção inválida, digite R para regular ou V para VIP.")    
 
         self.usuarios.append(usuario)
-        print(f"Usuário {nome} cadastrado com sucesso!")
+        print(f"Usuário {usuario.get_nome()} {usuario.tipo()} cadastrado com sucesso!")
 
     # Cadastro do livro, fisdig quer dizer fisico/digital.
     def cadastrarLivro(self):
@@ -81,10 +85,11 @@ class Biblioteca:
             lista_atual = usuario_encontrado.get_lista()
             lista_atual.append(livro)
             usuario_encontrado.set_lista(lista_atual)
-            print("Livro adicionado com sucesso!")
-            print(f"Livro {titulo} alugado com sucesso em nome de {name_check}!")
+            
+            print(f"Livro {titulo} entregue ao usuário {usuario.get_nome()}")
+            print(f"{livro.entregar()}")
         else:
-            print("Você chegou ao limite de livros, atualize para VIP para conseguir alugar mais.")
+            print("Você chegou ao limite de livros, devolva um de seus livros para conseguir alugar mais.")
             return
     # Mesma coisa que alugar, checa o usuário, mostra a lista de livros que ele tem e armazena a opção que escolher
     def devolverLivro(self):
