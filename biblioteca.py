@@ -142,29 +142,14 @@ class Usuario(ABC):
     def get_nome(self):
         return self._nome
 
-    def set_nome(self, nome):
-        self._nome = nome
-
     def get_email(self):
         return self._email
-
-    def set_email(self, email):
-        self._email = email
 
     def get_limite(self):
         return self._limite
 
-    def set_limite(self, limite):
-        if limite >= 3:
-            self._limite = limite
-        else:
-            print("limite não pode ser menor que 3")
-
     def get_lista(self):
         return self._lista
-
-    def set_lista(self, lista):
-        self._lista = lista
 
     @abstractmethod
     def tipo(self):
@@ -192,26 +177,14 @@ class Livro(ABC):
     def get_titulo(self):
         return self._titulo
 
-    def set_titulo(self, titulo):
-        self._titulo = titulo
-
     def get_autor(self):
         return self._autor
-
-    def set_autor(self, autor):
-        self._autor = autor
 
     def get_ano(self):
         return self._ano
 
-    def set_ano(self, ano):
-        self._ano = ano
-
     def get_status(self):
         return self._status
-
-    def set_status(self, status):
-        self._status = status
 
     def __str__(self):
         return f"{self._titulo} ({self._ano}) - {self._autor} [{self._status}]"
