@@ -1,2 +1,3 @@
-# Trabalhos-GEIA
-Todos os projetos feitos/em progresso no grupo de estudos.
+# Projeto Biblioteca em Python
+
+Sistema de gerenciamento de biblioteca com cadastro de livros, usuários e controle de aluguel.
